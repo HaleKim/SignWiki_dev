@@ -8,6 +8,12 @@ const HomeView = () => {
       <p className="text-lg text-text-secondary mb-8">수어 정보 플랫폼에 오신 것을 환영합니다.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Link to="/wiki">
+          <BaseCard className="hover:shadow-lg transition-shadow">
+            <h3 className="text-xl font-bold mb-2">수어 위키</h3>
+            <p className="text-text-secondary">궁금한 단어의 수어 표현을 찾아보고 함께 만들어가는 지식의 공간입니다.</p>
+          </BaseCard>
+        </Link>
         <Link to="/notifications">
           <BaseCard className="hover:shadow-lg transition-shadow">
             <h3 className="text-xl font-bold mb-2">맞춤 정보 알림</h3>

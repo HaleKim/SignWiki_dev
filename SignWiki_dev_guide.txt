@@ -74,6 +74,7 @@ function App() {
         <h1 className="text-2xl font-bold text-primary mb-8">수어 정보 플랫폼</h1>
         <nav className="space-y-2">
           <NavLink to="/" className={navLinkClass}>홈</NavLink>
+          <NavLink to="/wiki" className={navLinkClass}>수어 위키</NavLink>
           <NavLink to="/notifications" className={navLinkClass}>맞춤 정보</NavLink>
           <NavLink to="/community" className={navLinkClass}>커뮤니티</NavLink>
           <NavLink to="/education" className={navLinkClass}>디지털 자립 교육</NavLink>
@@ -97,22 +98,13 @@ import './index.css';
 
 // 각 페이지 컴포넌트를 import 합니다 (아래에서 생성할 예정).
 import HomeView from './views/HomeView.tsx';
+import WikiView from './views/WikiView.tsx';
 import NotificationsView from './views/NotificationsView.tsx';
 import CommunityView from './views/CommunityView.tsx';
 import EducationView from './views/EducationView.tsx';
 import FamilyView from './views/FamilyView.tsx';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    children: [
-      { index: true, element: <HomeView /> },
-      { path: 'notifications', element: <NotificationsView /> },
-      { path: 'community', element: <CommunityView /> },
-      { path: 'education', element: <EducationView /> },
-      { path: 'family', element: <FamilyView /> },
-    ],
+const router = createBrowserRouter(,
   },
 ]);
 
@@ -210,7 +202,7 @@ const InfoCard: React.FC<InfoCardProps> = ({ category, title, summary }) => {
 };
 
 export default InfoCard;
-파트 3: 주요 기능 페이지 프로토타입 구현이제 파트 2에서 만든 컴포넌트들을 조립하여 요청하신 4가지 주요 기능 페이지의 UI를 구체적으로 구현합니다. src 폴더 아래에 views 폴더를 만들고 각 페이지 컴포넌트 파일을 생성합니다.3.1. 홈 화면 (src/views/HomeView.tsx)앱의 첫인상을 결정하는 페이지로, 주요 기능들을 소개하고 각 페이지로 안내하는 역할을 합니다.TypeScriptimport BaseCard from '@/components/base/BaseCard';
+파트 3: 주요 기능 페이지 프로토타입 구현이제 파트 2에서 만든 컴포넌트들을 조립하여 요청하신 5가지 주요 기능 페이지의 UI를 구체적으로 구현합니다. src 폴더 아래에 views 폴더를 만들고 각 페이지 컴포넌트 파일을 생성합니다.3.1. 홈 화면 (src/views/HomeView.tsx)앱의 첫인상을 결정하는 페이지로, 주요 기능들을 소개하고 각 페이지로 안내하는 역할을 합니다.TypeScriptimport BaseCard from '@/components/base/BaseCard';
 import { Link } from 'react-router-dom';
 
 const HomeView = () => {
@@ -220,6 +212,12 @@ const HomeView = () => {
       <p className="text-lg text-text-secondary mb-8">수어 정보 플랫폼에 오신 것을 환영합니다.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Link to="/wiki">
+          <BaseCard className="hover:shadow-lg transition-shadow">
+            <h3 className="text-xl font-bold mb-2">수어 위키</h3>
+            <p className="text-text-secondary">궁금한 단어의 수어 표현을 찾아보고 함께 만들어가는 지식의 공간입니다.</p>
+          </BaseCard>
+        </Link>
         <Link to="/notifications">
           <BaseCard className="hover:shadow-lg transition-shadow">
             <h3 className="text-xl font-bold mb-2">맞춤 정보 알림</h3>
@@ -250,7 +248,70 @@ const HomeView = () => {
 };
 
 export default HomeView;
-3.2. 맞춤형 정보 알림 시스템 (src/views/NotificationsView.tsx)사용자가 설정한 관심 주제에 따라 다양한 정보를 텍스트와 수어 영상으로 제공하는 페이지입니다.TypeScriptimport InfoCard from '@/components/common/InfoCard';
+3.2. 수어 위키 페이지 (src/views/WikiView.tsx)나무위키의 구조를 차용한 위키 페이지입니다. 검색, 본문, 목차로 구성하여 정보 접근성을 높입니다.TypeScriptimport BaseCard from '@/components/base/BaseCard';
+import VideoPlaceholder from '@/components/common/VideoPlaceholder';
+
+const WikiView = () => {
+  return (
+    <div className="flex flex-col lg:flex-row gap-8">
+      {/* Main Content */}
+      <div className="w-full lg:w-3/4">
+        <div className="mb-6">
+          <input 
+            type="text" 
+            placeholder="궁금한 단어를 검색하세요 (예: 안녕하세요)"
+            className="w-full p-3 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+          />
+        </div>
+        <BaseCard>
+          <h2 className="text-3xl font-bold text-text-primary border-b border-border pb-4 mb-4">안녕하세요</h2>
+          <div className="flex flex-col md:flex-row gap-6">
+            <div className="w-full md:w-1/2">
+              <VideoPlaceholder />
+            </div>
+            <div className="w-full md:w-1/2">
+              <p className="text-text-secondary">
+                '안녕하세요'는 한국어의 가장 기본적인 인사말입니다. 만났을 때나 헤어질 때 모두 사용할 수 있으며, 상대방의 안녕과 평안을 바라는 의미를 담고 있습니다.
+              </p>
+            </div>
+          </div>
+          
+          <div className="prose max-w-none mt-8">
+            <h3 id="section-1">1. 어원</h3>
+            <p>
+              '안녕하다'는 '아무 탈 없이 편안하다'는 의미의 형용사입니다. 여기에 '-시-'라는 주체 높임 선어말 어미와 '-어요'라는 어미가 결합하여 존댓말이 되었습니다.
+            </p>
+            <h3 id="section-2">2. 수어 표현</h3>
+            <p>
+              한국수어(KSL)에서 '안녕하세요'는 오른손을 펴서 왼쪽 어깨에서 오른쪽 허리 쪽으로 대각선으로 내리며 고개를 살짝 숙이는 동작으로 표현합니다. 이는 '평안하다'는 의미를 나타냅니다.
+            </p>
+            <h3 id="section-3">3. 다른 나라의 표현</h3>
+            <ul>
+              <li>영어: Hello</li>
+              <li>일본어: こんにちは (곤니치와)</li>
+              <li>중국어: 你好 (니하오)</li>
+            </ul>
+          </div>
+        </BaseCard>
+      </div>
+
+      {/* Table of Contents */}
+      <aside className="w-full lg:w-1/4">
+        <BaseCard>
+          <h3 className="text-lg font-bold mb-4">목차</h3>
+          <ul className="space-y-2">
+            <li><a href="#section-1" className="text-primary hover:underline">1. 어원</a></li>
+            <li><a href="#section-2" className="text-primary hover:underline">2. 수어 표현</a></li>
+            <li><a href="#section-3" className="text-primary hover:underline">3. 다른 나라의 표현</a></li>
+          </ul>
+        </BaseCard>
+      </aside>
+    </div>
+  );
+};
+
+export default WikiView;
+3.3. 맞춤형 정보 알림 시스템 (src/views/NotificationsView.tsx)사용자가 설정한 관심 주제에 따라 다양한 정보를 텍스트와 수어 영상으로 제공하는 페이지입니다.TypeScriptimport InfoCard from '@/components/common/InfoCard';
 import BaseButton from '@/components/base/BaseButton';
 
 const notifications =;
@@ -279,7 +340,7 @@ const NotificationsView = () => {
 };
 
 export default NotificationsView;
-3.3. 커뮤니티 (src/views/CommunityView.tsx)자유게시판, Q&A 등 사용자들이 서로 소통하는 공간입니다.TypeScriptimport { useState } from 'react';
+3.4. 커뮤니티 (src/views/CommunityView.tsx)자유게시판, Q&A 등 사용자들이 서로 소통하는 공간입니다.TypeScriptimport { useState } from 'react';
 import BaseCard from '@/components/base/BaseCard';
 import BaseButton from '@/components/base/BaseButton';
 
@@ -341,7 +402,7 @@ const CommunityView = () => {
 };
 
 export default CommunityView;
-3.4. 디지털 자립 교육 콘텐츠 (src/views/EducationView.tsx)다양한 주제의 온라인 학습 콘텐츠를 제공하는 페이지입니다.TypeScriptimport BaseCard from '@/components/base/BaseCard';
+3.5. 디지털 자립 교육 콘텐츠 (src/views/EducationView.tsx)다양한 주제의 온라인 학습 콘텐츠를 제공하는 페이지입니다.TypeScriptimport BaseCard from '@/components/base/BaseCard';
 import BaseButton from '@/components/base/BaseButton';
 import VideoPlaceholder from '@/components/common/VideoPlaceholder';
 
@@ -389,7 +450,7 @@ const EducationView = () => {
 };
 
 export default EducationView;
-3.5. 가족 참여 콘텐츠 (src/views/FamilyView.tsx)가족 단위 활동 정보와 정서 안정 콘텐츠를 제공하는 페이지입니다.TypeScriptimport BaseCard from '@/components/base/BaseCard';
+3.6. 가족 참여 콘텐츠 (src/views/FamilyView.tsx)가족 단위 활동 정보와 정서 안정 콘텐츠를 제공하는 페이지입니다.TypeScriptimport BaseCard from '@/components/base/BaseCard';
 import InfoCard from '@/components/common/InfoCard';
 import VideoPlaceholder from '@/components/common/VideoPlaceholder';
 

@@ -10,6 +10,7 @@ import NotificationsView from './views/NotificationsView.tsx';
 import CommunityView from './views/CommunityView.tsx';
 import EducationView from './views/EducationView.tsx';
 import FamilyView from './views/FamilyView.tsx';
+import WikiView from './views/WikiView.tsx';
 
 const router = createBrowserRouter([
   {
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       { index: true, element: <HomeView /> },
+      { path: 'wiki', element: <WikiView /> },
       { path: 'notifications', element: <NotificationsView /> },
       { path: 'community', element: <CommunityView /> },
       { path: 'education', element: <EducationView /> },

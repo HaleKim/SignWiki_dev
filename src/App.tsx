@@ -12,6 +12,7 @@ function App() {
         <h1 className="text-2xl font-bold text-primary mb-8">수어 정보 플랫폼</h1>
         <nav className="space-y-2">
           <NavLink to="/" className={navLinkClass}>홈</NavLink>
+          <NavLink to="/wiki" className={navLinkClass}>수어 위키</NavLink>
           <NavLink to="/notifications" className={navLinkClass}>맞춤 정보</NavLink>
           <NavLink to="/community" className={navLinkClass}>커뮤니티</NavLink>
           <NavLink to="/education" className={navLinkClass}>디지털 자립 교육</NavLink>
