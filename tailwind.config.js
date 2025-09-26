@@ -4,9 +4,9 @@ export default {
     extend: {
       colors: {
         // 토스 스타일의 색상 팔레트 정의
-        'primary': '#0070F3', // 주요 버튼 및 링크 색상
+        'primary': '#0064FF', // 주요 버튼 및 링크 색상
         'secondary': '#6B7280', // 부가적인 텍스트 색상
-        'background': '#F9FAFB', // 전체 배경색
+        'background': '#F2F4F6', // 전체 배경색
         'surface': '#FFFFFF', // 카드 등 표면 색상
         'border': '#E5E7EB', // 경계선 색상
         'text-primary': '#111827', // 주요 텍스트 색상
