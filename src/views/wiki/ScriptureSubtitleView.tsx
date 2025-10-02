@@ -1,19 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { scriptureData } from '@/data/scriptureData';
-import type { ScriptureBook } from '@/data/scriptureData';
+import type { ScriptureBook, ScriptureChapter } from '@/data/scriptureData';
+import ScriptureVerseItem from '../../components/wiki/ScriptureVerseItem';
 
 const ScriptureSubtitleView: React.FC = () => {
   const [selectedBook, setSelectedBook] = useState<ScriptureBook | null>(null);
   const [selectedChapter, setSelectedChapter] = useState<number | null>(null);
+  const [verseSearchTerm, setVerseSearchTerm] = useState('');
 
   const handleSelectBook = (book: ScriptureBook) => {
     setSelectedBook(book);
     setSelectedChapter(null); // Reset chapter selection when a new book is chosen
+    setVerseSearchTerm(''); // Reset search term
   };
 
   const handleSelectChapter = (chapter: number) => {
     setSelectedChapter(chapter);
+    setVerseSearchTerm(''); // Reset search term
   };
+
+  const currentChapterData: ScriptureChapter | undefined = selectedBook?.chapters?.find(
+    (chap) => chap.number === selectedChapter
+  );
+
+  const filteredVerses = useMemo(() => {
+    if (!currentChapterData || !currentChapterData.verses) {
+      return [];
+    }
+    if (!verseSearchTerm) {
+      return currentChapterData.verses;
+    }
+    return currentChapterData.verses.filter(verse =>
+      verse.text.toLowerCase().includes(verseSearchTerm.toLowerCase())
+    );
+  }, [currentChapterData, verseSearchTerm]);
 
   return (
     <div className="flex h-[calc(100vh-120px)]">
@@ -36,7 +56,7 @@ const ScriptureSubtitleView: React.FC = () => {
               {selectedBook?.id === book.id && (
                 <div className="pl-4 mt-2 border-l-2 border-primary-variant">
                   <div className="grid grid-cols-5 gap-1">
-                    {Array.from({ length: book.chapterCount }, (_, i) => i + 1).map(chapter => (
+                    {Array.from({ length: book.chapterCount || (book.chapters ? book.chapters.length : 0) }, (_, i) => i + 1).map(chapter => (
                       <button
                         key={chapter}
                         onClick={() => handleSelectChapter(chapter)}
@@ -61,12 +81,32 @@ const ScriptureSubtitleView: React.FC = () => {
       <main className="flex-1 p-8 overflow-y-auto">
         {selectedBook && selectedChapter ? (
           <div>
-            <h1 className="text-3xl font-bold text-text-primary">
+            <h1 className="text-3xl font-bold text-text-primary mb-6">
               {selectedBook.name} {selectedChapter}장
             </h1>
-            <div className="mt-8 prose max-w-none">
-              {/* TODO: Fetch and display verses for the selected chapter */}
-              <p className="text-text-secondary">이곳에 {selectedBook.name} {selectedChapter}장의 구절별 내용과 수어 영상이 표시될 예정입니다.</p>
+
+            {currentChapterData && currentChapterData.verses.length > 0 && (
+              <div className="mb-6">
+                <input
+                  type="text"
+                  placeholder="구절 내용 검색..."
+                  className="w-full p-3 border border-border rounded-lg bg-surface focus:outline-none focus:ring-2 focus:ring-primary"
+                  value={verseSearchTerm}
+                  onChange={e => setVerseSearchTerm(e.target.value)}
+                />
+              </div>
+            )}
+
+            <div className="prose max-w-none">
+              {filteredVerses.length > 0 ? (
+                filteredVerses.map(verse => (
+                  <ScriptureVerseItem key={verse.number} verse={verse} />
+                ))
+              ) : currentChapterData && currentChapterData.verses.length > 0 && verseSearchTerm ? (
+                <p className="text-text-secondary">'{verseSearchTerm}'에 대한 검색 결과가 없습니다.</p>
+              ) : (
+                <p className="text-text-secondary">선택하신 장의 구절 데이터가 준비되지 않았습니다.</p>
+              )}
             </div>
           </div>
         ) : (
