@@ -1,16 +1,4 @@
-export interface DiscussionComment {
-  id: number;
-  author: string;
-  timestamp: string;
-  text: string;
-  replies?: DiscussionComment[]; // Nested replies
-}
-
-export interface DiscussionItem {
-  id: number;
-  contentItemId: number; // Links to ContentItem.id
-  comments: DiscussionComment[];
-}
+import type { DiscussionComment, DiscussionItem } from '@/types';
 
 export let discussionData: DiscussionItem[] = [
   {

@@ -1,11 +1,4 @@
-export interface ContentItem {
-  id: number;
-  category: '드라마' | '영화' | '뮤직비디오';
-  title: string;
-  thumbnailUrl: string;
-  subtitleCount: number;
-  discussionCount: number;
-}
+import type { ContentItem } from '@/types';
 
 export const contentData: ContentItem[] = [
   {

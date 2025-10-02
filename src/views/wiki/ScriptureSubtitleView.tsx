@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom'; // Import Link
 import { scriptureData } from '@/data/scriptureData';
-import type { ScriptureBook, ScriptureChapter } from '@/data/scriptureData';
+import type { ScriptureBook, ScriptureChapter } from '@/types';
 import ScriptureVerseItem from '../../components/wiki/ScriptureVerseItem';
 
 const ScriptureSubtitleView: React.FC = () => {
@@ -20,7 +21,7 @@ const ScriptureSubtitleView: React.FC = () => {
   };
 
   const currentChapterData: ScriptureChapter | undefined = selectedBook?.chapters?.find(
-    (chap) => chap.number === selectedChapter
+    (chap) => chap.number === Number(selectedChapter) // Ensure chapterNum is number
   );
 
   const filteredVerses = useMemo(() => {
@@ -100,7 +101,13 @@ const ScriptureSubtitleView: React.FC = () => {
             <div className="prose max-w-none">
               {filteredVerses.length > 0 ? (
                 filteredVerses.map(verse => (
-                  <ScriptureVerseItem key={verse.number} verse={verse} />
+                  <Link
+                    key={verse.number}
+                    to={`/wiki/scripture/${selectedBook.id}/${selectedChapter}/${verse.number}`}
+                    className="block no-underline text-inherit hover:bg-surface-hover rounded-lg transition-colors"
+                  >
+                    <ScriptureVerseItem verse={verse} />
+                  </Link>
                 ))
               ) : currentChapterData && currentChapterData.verses.length > 0 && verseSearchTerm ? (
                 <p className="text-text-secondary">'{verseSearchTerm}'에 대한 검색 결과가 없습니다.</p>

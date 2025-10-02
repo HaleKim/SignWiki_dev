@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { DiscussionComment, DiscussionItem } from '../../data/discussionData'; // Relative path for types
+import type { DiscussionComment, DiscussionItem } from '@/types';
 
 // Helper function to recursively count all comments and replies
 const countAllComments = (comments: DiscussionComment[]): number => {

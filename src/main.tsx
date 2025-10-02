@@ -16,6 +16,10 @@ import ScriptureSubtitleView from './views/wiki/ScriptureSubtitleView.tsx';
 import WordDatabaseView from './views/wiki/WordDatabaseView.tsx';
 import ContentDetailView from './views/wiki/ContentDetailView.tsx';
 
+import ScriptureVerseDetailView from './views/wiki/ScriptureVerseDetailView.tsx';
+
+import WordDatabaseDetailView from './views/wiki/WordDatabaseDetailView.tsx';
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -27,6 +31,8 @@ const router = createBrowserRouter([
       { path: 'wiki/scripture-subtitles', element: <ScriptureSubtitleView /> },
       { path: 'wiki/word-database', element: <WordDatabaseView /> },
       { path: 'wiki/content/:id', element: <ContentDetailView /> },
+      { path: 'wiki/scripture/:bookId/:chapterNum/:verseNum', element: <ScriptureVerseDetailView /> },
+      { path: 'wiki/word/:wordId', element: <WordDatabaseDetailView /> },
       { path: 'notifications', element: <NotificationsView /> },
       { path: 'community', element: <CommunityView /> },
       { path: 'education', element: <EducationView /> },

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { contentData } from '@/data/contentData';
-import type { ContentItem } from '@/data/contentData';
+import type { ContentItem } from '@/types';
 import BaseCard from '@/components/base/BaseCard';
 
 const ContentSubtitleView: React.FC = () => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import VideoPlaceholder from '../common/VideoPlaceholder'; // Corrected relative path
-import type { ScriptureVerse } from '../../data/scriptureData'; // Relative path for type
+import type { ScriptureVerse } from '@/types'; // Import from central types file
 
 interface ScriptureVerseItemProps {
   verse: ScriptureVerse;

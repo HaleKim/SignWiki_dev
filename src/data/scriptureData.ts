@@ -1,19 +1,4 @@
-export interface ScriptureVerse {
-  number: number;
-  text: string;
-}
-
-export interface ScriptureChapter {
-  number: number;
-  verses: ScriptureVerse[];
-}
-
-export interface ScriptureBook {
-  id: number;
-  name: string;
-  chapterCount?: number;
-  chapters?: ScriptureChapter[];
-}
+import type { ScriptureVerse, ScriptureChapter, ScriptureBook } from '@/types';
 
 export const scriptureData: ScriptureBook[] = [
   {

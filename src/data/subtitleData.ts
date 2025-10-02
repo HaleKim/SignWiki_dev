@@ -1,10 +1,4 @@
-export interface SubtitleEntry {
-  id: number;
-  contentItemId: number;
-  startTime: number; // in seconds
-  endTime: number; // in seconds
-  text: string;
-}
+import type { SubtitleEntry } from '@/types';
 
 export let subtitleData: SubtitleEntry[] = [
   {
