@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { scriptureData } from '@/data/scriptureData';
+import { scriptureVerseDetailData } from '@/data/scriptureVerseDetailData';
+import { discussionData } from '@/data/discussionData';
 import type { ScriptureBook, ScriptureVerseDetail, DiscussionItem, DiscussionComment } from '@/types';
 import DiscussionSection from '../../components/common/DiscussionSection';
 
@@ -108,35 +110,25 @@ const ScriptureVerseDetailView: React.FC = () => {
     };
 
     setAllDiscussions(prevDiscussions => {
-      const updatedDiscussions = prevDiscussions.map(disc => {
-        const discussionIdentifier = `${bookId}-${chapterNum}-${verseNum}`;
-        if (disc.id === discussionIdentifier) {
-          const addReplyToComment = (comments: DiscussionComment[]): DiscussionComment[] => {
-            return comments.map(comment => {
-              if (comment.id === parentId) {
-                return {
-                  ...comment,
-                  replies: comment.replies ? [...comment.replies, newReply] : [newReply],
-                };
-              }
-              if (comment.replies && comment.replies.length > 0) {
-                return {
-                  ...comment,
-                  replies: addReplyToComment(comment.replies),
-                };
-              }
-              return comment;
-            });
-          };
+      const discussionIdentifier = `${bookId}-${chapterNum}-${verseNum}`;
+      const existingDiscussionIndex = prevDiscussions.findIndex(disc => disc.id === discussionIdentifier);
 
-          return {
-            ...disc,
-            comments: addReplyToComment(disc.comments),
-          };
-        }
-        return disc;
-      });
-      return updatedDiscussions;
+      if (existingDiscussionIndex !== -1) {
+        const updatedDiscussions = [...prevDiscussions];
+        const updatedComments = [...updatedDiscussions[existingDiscussionIndex].comments, newReply];
+        updatedDiscussions[existingDiscussionIndex] = {
+          ...updatedDiscussions[existingDiscussionIndex],
+          comments: updatedComments,
+        };
+        return updatedDiscussions;
+      } else {
+        const newDiscussionItem: DiscussionItem = {
+          id: discussionIdentifier, // Use identifier as ID
+          contentItemId: -1, // Not applicable for verse discussion, or link to verse detail ID
+          comments: [newReply],
+        };
+        return [...prevDiscussions, newDiscussionItem];
+      }
     });
   };
 

@@ -16,7 +16,7 @@ export interface DiscussionComment {
 }
 
 export interface DiscussionItem {
-  id: number;
+  id: number | string;
   contentItemId?: number; // Links to ContentItem.id, made optional for verse discussions
   comments: DiscussionComment[];
 }
