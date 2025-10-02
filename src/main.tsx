@@ -11,6 +11,10 @@ import CommunityView from './views/CommunityView.tsx';
 import EducationView from './views/EducationView.tsx';
 import FamilyView from './views/FamilyView.tsx';
 import WikiView from './views/WikiView.tsx';
+import ContentSubtitleView from './views/wiki/ContentSubtitleView.tsx';
+import ScriptureSubtitleView from './views/wiki/ScriptureSubtitleView.tsx';
+import WordDatabaseView from './views/wiki/WordDatabaseView.tsx';
+import ContentDetailView from './views/wiki/ContentDetailView.tsx';
 
 const router = createBrowserRouter([
   {
@@ -19,6 +23,10 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomeView /> },
       { path: 'wiki', element: <WikiView /> },
+      { path: 'wiki/content-subtitles', element: <ContentSubtitleView /> },
+      { path: 'wiki/scripture-subtitles', element: <ScriptureSubtitleView /> },
+      { path: 'wiki/word-database', element: <WordDatabaseView /> },
+      { path: 'wiki/content/:id', element: <ContentDetailView /> },
       { path: 'notifications', element: <NotificationsView /> },
       { path: 'community', element: <CommunityView /> },
       { path: 'education', element: <EducationView /> },
