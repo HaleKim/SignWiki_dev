@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL | Draggable Mini Frame</title>
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: transparent;
+        overflow: hidden;
+      }
+
+      /* ✅ Unity iframe을 감싸는 전체 박스 */
+      .unity-wrapper {
+        position: absolute;
+        top: 50px;
+        left: 50px;
+        width: 250px;
+        height: 330px; /* (iframe 높이 + 핸들 높이 30px) */
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      /* ✅ 상단 드래그 핸들 */
+      .drag-handle {
+        height: 30px;
+        background: rgba(40, 40, 40, 0.8);
+        color: white;
+        font-family: sans-serif;
+        font-size: 12px;
+        text-align: center;
+        line-height: 30px;
+        cursor: move;
+        user-select: none;
+      }
+
+      .drag-handle:hover {
+        background: rgba(60, 60, 60, 0.9);
+      }
+
+      /* ✅ Unity iframe */
+      #unity-frame {
+        width: 250px;
+        height: 300px;
+        border: none;
+        background: transparent;
+        display: block;
+      }
+
+      /* 드래그 중 효과 */
+      .dragging {
+        opacity: 0.85;
+        cursor: grabbing;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="unity-wrapper" id="unityWrapper">
+      <div class="drag-handle" id="dragHandle">⠿ Drag to move</div>
+      <iframe
+        id="unity-frame"
+        src="APP/index.html"
+        scrolling="no"
+        frameborder="0"
+        allowtransparency="true"
+        allowfullscreen="true">
+      </iframe>
+    </div>
+
+    <script>
+      const wrapper = document.getElementById("unityWrapper");
+      const handle = document.getElementById("dragHandle");
+
+      let isDragging = false;
+      let offsetX = 0;
+      let offsetY = 0;
+
+      // 🖱️ 마우스 드래그
+      handle.addEventListener("mousedown", (e) => {
+        isDragging = true;
+        offsetX = e.clientX - wrapper.offsetLeft;
+        offsetY = e.clientY - wrapper.offsetTop;
+        wrapper.classList.add("dragging");
+      });
+
+      document.addEventListener("mousemove", (e) => {
+        if (!isDragging) return;
+        wrapper.style.left = `${e.clientX - offsetX}px`;
+        wrapper.style.top = `${e.clientY - offsetY}px`;
+      });
+
+      document.addEventListener("mouseup", () => {
+        isDragging = false;
+        wrapper.classList.remove("dragging");
+      });
+
+      // 📱 터치 드래그
+      handle.addEventListener("touchstart", (e) => {
+        const touch = e.touches[0];
+        isDragging = true;
+        offsetX = touch.clientX - wrapper.offsetLeft;
+        offsetY = touch.clientY - wrapper.offsetTop;
+        wrapper.classList.add("dragging");
+      });
+
+      document.addEventListener("touchmove", (e) => {
+        if (!isDragging) return;
+        const touch = e.touches[0];
+        wrapper.style.left = `${touch.clientX - offsetX}px`;
+        wrapper.style.top = `${touch.clientY - offsetY}px`;
+      });
+
+      document.addEventListener("touchend", () => {
+        isDragging = false;
+        wrapper.classList.remove("dragging");
+      });
+    </script>
+  </body>
+</html>
