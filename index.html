@@ -216,7 +216,8 @@
          - Unity가 iframe 안이면 아래 한 줄 주석 해제하고 사용
            const call = (t)=>document.getElementById('unity-frame').contentWindow?.PlaySign?.(t);
          ========================= */
-      const call = (t)=>window.PlaySign?.(t);
+           const call = (t)=>document.getElementById('unity-frame').contentWindow?.PlaySign?.(t);
+      // const call = (t)=>window.PlaySign?.(t);
         
       /* =========================
          1) 드래그-선택 플로팅 버튼
