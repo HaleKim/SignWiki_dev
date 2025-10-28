@@ -21,8 +21,8 @@
         position: absolute;
         top: 50px;
         left: 50px;
-        width: 250px;
-        height: 330px; /* (iframe 높이 + 핸들 높이 30px) */
+        width: 300px;
+        height: 390px; /* (iframe 높이 + 핸들 높이 30px) */
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -48,8 +48,8 @@
 
       /* ✅ Unity iframe */
       #unity-frame {
-        width: 250px;
-        height: 300px;
+        width: 300px;
+        height: 390px;
         border: none;
         background: transparent;
         display: block;
@@ -60,6 +60,50 @@
         opacity: 0.85;
         cursor: grabbing;
       }
+
+      /* 우측 둥근 토글 버튼 */
+      #unity-toggle {
+        position: fixed;
+        top: 50%;
+        right: 16px;
+        transform: translateY(-50%);
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: none;
+        box-shadow: 0 4px 12px rgba(0,0,0,.2);
+        background: #111;
+        color: #fff;
+        font-size: 22px;
+        cursor: pointer;
+        z-index: 10000; /* wrapper(9999)보다 위 */
+      }
+
+      /* 숨김 상태 전환 효과 */
+      .unity-wrapper {
+        transition: opacity .2s ease, visibility .2s ease;
+      }
+      .unity-wrapper.is-hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      /* 플로팅 버튼 */
+      #sign-selection-btn{
+        position:fixed;display:none;z-index:10001;
+        padding:8px 10px;border:none;border-radius:999px;
+        font-size:12px;background:#111;color:#fff;
+        box-shadow:0 4px 12px rgba(0,0,0,.2);cursor:pointer;user-select:none
+      }
+      #sign-selection-btn:active{transform:translateY(1px)}
+      /* 인라인 버튼 */
+      .sign-inline-btn{
+        display:inline-flex;align-items:center;gap:6px;margin-left:8px;
+        padding:6px 8px;border:none;border-radius:999px;background:#111;color:#fff;
+        font-size:12px;cursor:pointer
+      }
+      .sign-inline-btn:active{transform:translateY(1px)}
     </style>
   </head>
   <body>
@@ -78,7 +122,12 @@
         allowfullscreen="true">
       </iframe>
     </div>
-
+    
+    <button id="unity-toggle" aria-pressed="true" title="수어 창 보이기/숨기기">👁</button>
+    
+    <!-- 플로팅 버튼 요소 -->
+    <button id="sign-selection-btn" type="button">수어 재생</button>
+    
     <script>
       const wrapper = document.getElementById("unityWrapper");
       const handle = document.getElementById("dragHandle");
@@ -126,6 +175,105 @@
         isDragging = false;
         wrapper.classList.remove("dragging");
       });
+
+      // 보이기/숨기기 토글
+      const toggleBtn = document.getElementById("unity-toggle");
+
+      function setVisible(visible) {
+        if (visible) {
+          wrapper.classList.remove("is-hidden");
+          toggleBtn.textContent = "👁";         // 보이는 중
+          toggleBtn.setAttribute("aria-pressed", "true");
+        } else {
+          wrapper.classList.add("is-hidden");
+          toggleBtn.textContent = "👁";         // 숨김 중
+          toggleBtn.setAttribute("aria-pressed", "false");
+        }
+      }
+      setVisible(false);
+    
+      // 상태 저장/복원 (선택): 새로고침해도 유지
+      const KEY = "unityWrapperVisible";
+      let visible = localStorage.getItem(KEY);
+      visible = visible === null ? "true" : visible; // 기본: 보이기
+      setVisible(visible === "true");
+    
+      toggleBtn.addEventListener("click", () => {
+        const next = !wrapper.classList.contains("is-hidden");
+        setVisible(!next);
+        localStorage.setItem(KEY, String(!next));
+      });
+    
+      // 편의: Alt+S 로 토글
+      document.addEventListener("keydown", (e) => {
+        if (e.altKey && (e.key === "s" || e.key === "S")) {
+          toggleBtn.click();
+        }
+      });
+
+      /* =========================
+         0) 공용 헬퍼: PlaySign 호출
+         - Unity가 iframe 안이면 아래 한 줄 주석 해제하고 사용
+           const call = (t)=>document.getElementById('unity-frame').contentWindow?.PlaySign?.(t);
+         ========================= */
+      const call = (t)=>window.PlaySign?.(t);
+        
+      /* =========================
+         1) 드래그-선택 플로팅 버튼
+         ========================= */
+      const selBtn = document.getElementById('sign-selection-btn');
+      let lastSelectedText = '';
+        
+      function updateSelectionButton(){
+        const sel = window.getSelection();
+        if(!sel || sel.rangeCount===0){ selBtn.style.display='none'; return; }
+        const text = (sel.toString()||'').trim();
+        if(!text){ selBtn.style.display='none'; return; }
+        lastSelectedText = text;
+      
+        const rect = sel.getRangeAt(0).getBoundingClientRect();
+        const top = Math.max(8, rect.top + window.scrollY - 40);
+        const left = Math.min(window.innerWidth - 120, rect.right + window.scrollX - 80);
+        selBtn.style.top = `${top}px`;
+        selBtn.style.left = `${left}px`;
+        selBtn.style.display = 'block';
+      }
+    
+      document.addEventListener('selectionchange', ()=> setTimeout(updateSelectionButton,0));
+      window.addEventListener('scroll', ()=> selBtn.style.display!=='none' && updateSelectionButton(), {passive:true});
+      window.addEventListener('resize', ()=> selBtn.style.display!=='none' && updateSelectionButton());
+      selBtn.addEventListener('mousedown', e=> e.preventDefault());
+      selBtn.addEventListener('click', ()=>{
+        const t = (lastSelectedText||'').trim();
+        if(t) call(t);
+        selBtn.style.display='none';
+        window.getSelection()?.removeAllRanges();
+      });
+    
+      /* =========================
+         2) 스크랩 블록 인라인 버튼 자동 주입
+         - .scrap 이나 [data-sign] 요소의 텍스트를 PlaySign으로 전달
+         ========================= */
+      function injectInlineButtons(){
+        document.querySelectorAll('.scrap, [data-sign]').forEach(el=>{
+          if(el.__signBtnInjected) return;
+          el.__signBtnInjected = true;
+        
+          const btn = document.createElement('button');
+          btn.type='button';
+          btn.className='sign-inline-btn';
+          btn.textContent='수어 재생';
+          btn.title='이 텍스트를 수어로 재생';
+          btn.addEventListener('click', e=>{
+            e.stopPropagation();
+            const txt = (el.innerText||el.textContent||'').trim();
+            if(txt) call(txt);
+          });
+          el.appendChild(btn);
+        });
+      }
+      window.addEventListener('DOMContentLoaded', injectInlineButtons);
+      new MutationObserver(injectInlineButtons).observe(document.body, {childList:true, subtree:true});
     </script>
   </body>
 </html>
